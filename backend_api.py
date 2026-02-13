@@ -9,6 +9,11 @@ from fastapi.responses import JSONResponse
 import shutil
 import os
 from pathlib import Path
+from database import SessionLocal, engine
+import models
+from sqlalchemy.orm import Session
+from fastapi import Depends
+
 
 # Import your AI logic
 from civic_issue_reporter import (
@@ -19,6 +24,16 @@ from civic_issue_reporter import (
 )
 
 app = FastAPI(title="AI Civic Issue Reporting API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # for development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+models.Base.metadata.create_all(bind=engine)
+
 
 # Enable CORS for React frontend
 app.add_middleware(
@@ -32,6 +47,14 @@ app.add_middleware(
 # Create uploads directory
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 
 # ========================================
@@ -81,7 +104,8 @@ async def submit_report(
     file: UploadFile = File(...),
     latitude: float = Form(None),
     longitude: float = Form(None),
-    address: str = Form(None)
+    address: str = Form(None),
+    db: Session = Depends(get_db)
 ):
     """
     Full report submission with location data.
@@ -106,6 +130,26 @@ async def submit_report(
         
         # Generate full report
         report = get_report_json(file.filename, location)
+
+        new_complaint = models.Complaint(
+            report_id=report["data"]["report_id"],
+            issue_type=report["data"]["issue"]["type"],
+            category=report["data"]["issue"]["category"],
+            confidence=report["data"]["issue"]["confidence"],
+            severity=report["data"]["issue"]["severity"],
+            priority=report["data"]["issue"]["priority"],
+            latitude=latitude,
+            longitude=longitude,
+            address=report["data"]["location"]["address"],
+            resolution_timeline=report["data"]["resolution_timeline"],
+            department=report["data"]["department"],
+            complaint_text=report["data"]["user_feedback"]["message"]
+        )
+
+        db.add(new_complaint)
+        db.commit()
+        db.refresh(new_complaint)
+        
         
         # TODO: Save to database here
         # save_to_database(report)

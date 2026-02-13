@@ -1,0 +1,13 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+civic.db
+uploads/
+
+# Node
+node_modules/
+dist/
+
+# Environment
+.env
