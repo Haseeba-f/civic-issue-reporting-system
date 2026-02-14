@@ -9,11 +9,6 @@ from fastapi.responses import JSONResponse
 import shutil
 import os
 from pathlib import Path
-from database import SessionLocal, engine
-import models
-from sqlalchemy.orm import Session
-from fastapi import Depends
-
 
 # Import your AI logic
 from civic_issue_reporter import (
@@ -24,21 +19,14 @@ from civic_issue_reporter import (
 )
 
 app = FastAPI(title="AI Civic Issue Reporting API")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # for development
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-models.Base.metadata.create_all(bind=engine)
-
 
 # Enable CORS for React frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",  # Added this
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,14 +35,6 @@ app.add_middleware(
 # Create uploads directory
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 
 # ========================================
@@ -79,13 +59,19 @@ async def quick_classify_endpoint(file: UploadFile = File(...)):
     Use this for instant feedback while user is uploading.
     """
     try:
+        print(f"📸 Received file: {file.filename}")
+        
         # Save uploaded file temporarily
         file_path = UPLOAD_DIR / file.filename
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
+        print(f"✅ File saved to: {file_path}")
+        
         # Get quick classification
         result = quick_classify(file.filename)
+        
+        print(f"✅ Classification result: {result}")
         
         return JSONResponse(content={
             "success": True,
@@ -93,6 +79,9 @@ async def quick_classify_endpoint(file: UploadFile = File(...)):
         })
     
     except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": str(e)}
@@ -104,18 +93,22 @@ async def submit_report(
     file: UploadFile = File(...),
     latitude: float = Form(None),
     longitude: float = Form(None),
-    address: str = Form(None),
-    db: Session = Depends(get_db)
+    address: str = Form(None)
 ):
     """
     Full report submission with location data.
     Returns: complete report JSON
     """
     try:
+        print(f"📸 Received file: {file.filename}")
+        print(f"📍 Location: {latitude}, {longitude}")
+        
         # Save uploaded file
         file_path = UPLOAD_DIR / file.filename
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
+        
+        print(f"✅ File saved to: {file_path}")
         
         # Prepare location data if provided
         location = None
@@ -130,26 +123,8 @@ async def submit_report(
         
         # Generate full report
         report = get_report_json(file.filename, location)
-
-        new_complaint = models.Complaint(
-            report_id=report["data"]["report_id"],
-            issue_type=report["data"]["issue"]["type"],
-            category=report["data"]["issue"]["category"],
-            confidence=report["data"]["issue"]["confidence"],
-            severity=report["data"]["issue"]["severity"],
-            priority=report["data"]["issue"]["priority"],
-            latitude=latitude,
-            longitude=longitude,
-            address=report["data"]["location"]["address"],
-            resolution_timeline=report["data"]["resolution_timeline"],
-            department=report["data"]["department"],
-            complaint_text=report["data"]["user_feedback"]["message"]
-        )
-
-        db.add(new_complaint)
-        db.commit()
-        db.refresh(new_complaint)
         
+        print(f"✅ Report generated: {report['report_id']}")
         
         # TODO: Save to database here
         # save_to_database(report)
@@ -160,6 +135,9 @@ async def submit_report(
         })
     
     except Exception as e:
+        print(f"❌ Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": str(e)}
