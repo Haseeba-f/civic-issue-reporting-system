@@ -1,137 +1,182 @@
-🚀 AI Civic Issue Reporting System
+<div align="center">
 
-An AI-powered platform that simplifies and accelerates the reporting of urban civic issues using a single image.
+# 🏙️ AI Civic Issue Reporting System
 
-🏙️ Problem Statement
+**Report urban issues instantly — one image, zero forms.**
 
-Urban civic issues such as potholes, garbage overflow, and broken streetlights often remain unresolved due to slow, manual, and inefficient reporting systems. Citizens are required to fill lengthy forms, provide detailed descriptions, and follow complex procedures—leading to delays and low engagement.
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat&logo=react&logoColor=black)](https://reactjs.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![Hackathon](https://img.shields.io/badge/Hackathon-Top%2070%20of%20220%2B-gold?style=flat)](https://github.com/Haseeba-f/civic-issue-reporting-system)
 
-💡 Solution
+[Overview](#overview) · [Features](#features) · [Demo](#how-it-works) · [Tech Stack](#tech-stack) · [Getting Started](#getting-started) · [Team](#team)
 
-AI Civic Issue Reporting System enables citizens to report civic problems instantly by uploading just one image. The system automatically detects the issue, assigns severity and priority, captures location, and generates a formal complaint—making civic reporting fast, simple, and structured.
+</div>
 
-✨ Key Features
+---
 
-📸 One-Click Image-Based Reporting
+## Overview
 
-🧠 AI-Powered Issue Detection (Computer Vision)
+Urban civic issues — potholes, overflowing garbage, broken streetlights — often go unresolved for weeks or months due to slow, manual, and inaccessible reporting systems. Citizens are expected to fill lengthy forms, write detailed descriptions, and navigate complex municipal procedures, leading to low engagement and delayed action.
 
-⚠️ Automatic Severity & Priority Assignment
+**AI Civic Issue Reporting System** eliminates that friction. Citizens upload a single photo; the platform handles everything else — detecting the issue, assigning priority, capturing location, and generating a formal complaint — in seconds.
 
-📝 Auto-Generated Formal Complaint
+> 🏆 **Selected among the top 70 teams out of 220+ submissions** at a national-level hackathon in the domain of *Intelligent Systems & AI Innovation.*
 
-📍 Location-Aware Reporting
+---
 
-📊 Instant Feedback to Users
+## Features
 
-📱 Mobile-Friendly Interface
+| Feature | Description |
+|---|---|
+| 📸 **One-Click Reporting** | Upload a single image — no forms, no manual input |
+| 🧠 **AI Issue Detection** | MobileNet-powered computer vision classifies potholes, garbage, streetlights, and more |
+| ⚠️ **Auto Severity & Priority** | Rule-based engine assigns urgency levels for faster triage |
+| 📝 **Formal Complaint Generation** | Structured, actionable complaint documents generated automatically |
+| 📍 **Location-Aware** | Browser Geolocation API captures precise coordinates |
+| 📊 **Instant Feedback** | Real-time classification results and report confirmation |
+| 📱 **Mobile-First Design** | Fully responsive interface optimized for smartphones |
 
-⚙️ How It Works
+---
 
-User uploads an image of a civic issue
+## How It Works
 
-AI model classifies the issue (pothole, garbage, streetlight, etc.)
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  1. Upload Image │───▶│  2. AI Detection  │───▶│ 3. Severity &   │
+│                 │    │  (MobileNet CNN)  │    │   Priority Set  │
+└─────────────────┘    └──────────────────┘    └────────┬────────┘
+                                                        │
+┌─────────────────┐    ┌──────────────────┐    ┌────────▼────────┐
+│  6. Stored for  │◀───│  5. Report Filed  │◀───│ 4. Complaint    │
+│     Tracking   │    │                  │    │   Generated     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
 
-Severity and priority are assigned using rule-based logic
+1. **Capture** — User uploads or takes a photo of a civic issue
+2. **Classify** — MobileNet model identifies the issue type with confidence scoring
+3. **Prioritize** — Rule-based engine assigns severity (Low / Medium / High / Critical)
+4. **Locate** — Browser Geolocation API captures GPS coordinates
+5. **Generate** — A formal, structured complaint is produced automatically
+6. **Store** — Report is saved to the database for tracking and authority review
 
-User location is captured automatically
+---
 
-A formal complaint is generated instantly
+## Tech Stack
 
-The report is stored for tracking and action
+**Frontend**
+- React.js — component-based UI
+- Tailwind CSS — responsive, mobile-first styling
 
-🛠️ Tech Stack
+**Backend**
+- FastAPI (Python) — lightweight, high-performance REST API
 
-Frontend
+**AI & Intelligence**
+- Pretrained MobileNet — image classification via transfer learning
+- Rule-based engine — explainable severity and priority assignment
+- Template engine — formal complaint generation in Python
 
-React.js
+**Infrastructure**
+- Browser Geolocation API — real-time GPS capture
+- SQLite — embedded database for report storage
+- Docker — optional containerized deployment
 
-Tailwind CSS
+---
 
-Backend
+## Getting Started
 
-FastAPI (Python)
+### Prerequisites
 
-AI & Logic
+- Python 3.9+
+- Node.js 16+
+- pip & npm
 
-Pretrained MobileNet model for image classification
+### Backend Setup
 
-Rule-based priority & severity engine
+```bash
+# Clone the repository
+git clone https://github.com/Haseeba-f/civic-issue-reporting-system.git
+cd civic-issue-reporting-system
 
-Template-based complaint generation using Python
+# Install Python dependencies
+pip install -r requirements.txt
 
-Other
+# Start the FastAPI server
+uvicorn backend_api:app --reload
+```
 
-Browser Geolocation API
+The API will be available at `http://localhost:8000`.
 
-SQLite Database
+### Frontend Setup
 
-Optional Docker support
+```bash
+# Navigate to the frontend directory
+cd civic-frontend
 
-🧪 Use Cases
+# Install dependencies
+npm install
 
-Fast civic issue reporting for citizens
+# Start the development server
+npm start
+```
 
-Reduced manual workload for authorities
+The app will open at `http://localhost:3000`.
 
-Structured, actionable, and location-verified complaints
+---
 
-Improved transparency and response prioritization
+## Handled Challenges
 
-🚧 Dependencies & Limitations
+| Challenge | Solution |
+|---|---|
+| Poor image quality | Confidence threshold validation — low-confidence images are flagged for user review |
+| Misclassification | Rule-based priority logic provides a safety net over AI output |
+| Network unreliability | Lightweight backend design minimizes latency and failure surface |
 
-Dependencies
+---
 
-Camera & GPS access
+## Roadmap
 
-Internet connectivity
+- [ ] Authority dashboard for issue tracking and status updates
+- [ ] Push notifications for real-time complaint status
+- [ ] Cloud deployment (AWS / GCP)
+- [ ] Multi-city and multi-language support
+- [ ] Historical analytics and heatmaps for urban planners
+- [ ] Integration with municipal APIs for direct complaint submission
 
-Pretrained AI model
+---
 
-Handled Challenges
+## Team
 
-Poor image quality → confidence-based validation
+**Team Lead**
+- **Haseeba** — MLR Institute of Technology
 
-Misclassification → rule-based priority logic
+**Team Members**
+- **Hafsa Fathima** — Jayaprakash Narayan College of Engineering
+- **Khadeeja Khadeer** — Jayaprakash Narayan College of Engineering
 
-Network issues → lightweight backend design
+---
 
-🌟 What Makes This Project Unique
+## Contributing
 
-Single-image, zero-form reporting
+Contributions are welcome. Please open an issue first to discuss what you'd like to change, then submit a pull request.
 
-AI + explainable priority assignment
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
 
-Auto-generated formal complaints
+---
 
-Designed for real-world usability & demos
+## License
 
-👥 Team
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-Team Lead
+---
 
-Haseeba – MLR Institute of Technology
+<div align="center">
 
-Team Members
+If this project helped or inspired you, please consider giving it a ⭐
 
-Hafsa Fathima – Jayaprakash Narayan College of Engineering
-
-Khadeeja Khadeer – Jayaprakash Narayan College of Engineering
-
-🏆 Hackathon Achievement
-
-Selected among 70 teams out of 220+ submissions
-
-Domain: Intelligent Systems & AI Innovation
-
-📌 Future Enhancements
-
-Authority dashboard for issue tracking
-
-Real-time status updates
-
-Cloud deployment
-
-Multi-city scalability
-
-⭐ If you like this project, consider starring the repository!
+</div>
