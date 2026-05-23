@@ -22,7 +22,7 @@ Urban civic issues — potholes, overflowing garbage, broken streetlights — of
 
 **AI Civic Issue Reporting System** eliminates that friction. Citizens upload a single photo; the platform handles everything else — detecting the issue, assigning priority, capturing location, and generating a formal complaint — in seconds.
 
-> 🏆 **Selected among the top 70 teams out of 220+ submissions** at a national-level hackathon in the domain of *Intelligent Systems & AI Innovation.*
+> 🏆 **Selected among the top 10 teams out of 220+ submissions** at a national-level hackathon in the domain of *Intelligent Systems & AI Innovation.*
 
 ---
 
